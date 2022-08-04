@@ -38,7 +38,7 @@ Have fun!
 
 Author: Jesper Hansen
 Date: 2020-04-17
-License: whatever
+Updated: 2022-07-03, Phil Hilger (PeerGum)
 
 """
 
@@ -59,7 +59,11 @@ ffsector = bytearray([255] * 0x1000)                                # 0x1000 of 
 # say hello
 print("\nFAT Filesystem Generator for ESP\n")
 print("Enter partition size (in hex or decimal) :")
-fssize = input()
+size = input()
+if size[0:2] == "0x":
+	fssize = int(size,16)
+else:
+	fssize = int(size)
 
 # sensibility check
 if fssize < (1*1024*1024) or fssize > (15*1024*1024):
@@ -69,7 +73,7 @@ if fssize < (1*1024*1024) or fssize > (15*1024*1024):
 print("\nGenerating filesystem")
 
 # number of sectors
-max_sectors = (fssize/0x1000)
+max_sectors = int(fssize/0x1000)
 
 # sectors for BOOT, FAT, DIR e.t.c.
 if max_sectors > 2730:  # 2730 = number of FAT12 entries in 4096 bytes
@@ -111,7 +115,7 @@ print("Sectors : " + str(max_sectors))
 print("Serial  : " + str(id1))
 
 # create new file
-f = open('filesystem.img', 'w')
+f = open('filesystem.img', 'wb')
 
 # write out bootsector to file
 f.write(bootsector)
